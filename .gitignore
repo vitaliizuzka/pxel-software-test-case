@@ -1,0 +1,24 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/libraries
+.idea/dictionaries
+.idea/modules.xml
+.idea/compiler.xml
+.idea/misc.xml
+.idea/vcs.xml
+.idea/scopes/
+.idea/encodings.xml
+.idea/sonarlint/
+.idea/codeStyles/
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+.mvn/
