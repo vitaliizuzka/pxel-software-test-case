@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import software.pxel.pxelsoftwaretestcase.model.auth.AuthRequest;
-import software.pxel.pxelsoftwaretestcase.model.auth.AuthResponse;
+import software.pxel.pxelsoftwaretestcase.model.dto.AuthRequestDto;
+import software.pxel.pxelsoftwaretestcase.model.dto.AuthResponseDto;
 import software.pxel.pxelsoftwaretestcase.security.AppUserDetails;
 import software.pxel.pxelsoftwaretestcase.security.JwtUtil;
 
@@ -27,15 +27,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request){
+    public AuthResponseDto login(@RequestBody AuthRequestDto request){
         try{
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+                    new UsernamePasswordAuthenticationToken(request.username(), request.password()));
             AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
 
             String token = jwtUtil.generateToken(userDetails.getUser().getId());
 
-            return new AuthResponse(token);
+            return new AuthResponseDto(token);
         }catch (AuthenticationException e){
             throw new RuntimeException("Invalid login or password");
         }

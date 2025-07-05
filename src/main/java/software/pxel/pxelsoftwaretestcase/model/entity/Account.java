@@ -21,4 +21,19 @@ public class Account {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public Long getId() {
+        return id;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public BigDecimal getInitialBalance() {
+        return initialBalance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 }

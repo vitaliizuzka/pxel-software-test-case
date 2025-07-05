@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import software.pxel.pxelsoftwaretestcase.service.AppUserDetailsService;
+import software.pxel.pxelsoftwaretestcase.service.Impl.UserDetailsServiceImpl;
 
 import java.io.IOException;
 
@@ -22,13 +22,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String AUTH_HEADER = "Authorization";
     public static final int SUBSTR_JWT_INDEX = 7;
     private final JwtUtil jwtUtil;
-    private final AppUserDetailsService appUserDetailsService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
 
     @Autowired
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, AppUserDetailsService appUserDetailsService) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.jwtUtil = jwtUtil;
-        this.appUserDetailsService = appUserDetailsService;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         Long userIdFromJwt = jwtUtil.extractUserId(jwt);
-        UserDetails userDetails = appUserDetailsService.loadUserByUsernameById(userIdFromJwt);
+        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsernameById(userIdFromJwt);
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

@@ -44,7 +44,7 @@ public class JwtUtil {
     public boolean validateToken(String token){
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(token)
+                    .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
             return true;

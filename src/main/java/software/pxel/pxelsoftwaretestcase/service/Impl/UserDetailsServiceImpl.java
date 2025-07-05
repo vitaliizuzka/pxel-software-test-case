@@ -1,4 +1,4 @@
-package software.pxel.pxelsoftwaretestcase.service;
+package software.pxel.pxelsoftwaretestcase.service.Impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +15,14 @@ import software.pxel.pxelsoftwaretestcase.repository.UserRepository;
 import software.pxel.pxelsoftwaretestcase.security.AppUserDetails;
 
 @Service
-public class AppUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final EmailDataRepository emailDataRepository;
     private final PhoneDataRepository phoneDataRepository;
 
     @Autowired
-    public AppUserDetailsService(UserRepository userRepository, EmailDataRepository emailDataRepository, PhoneDataRepository phoneDataRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository, EmailDataRepository emailDataRepository, PhoneDataRepository phoneDataRepository) {
         this.userRepository = userRepository;
         this.emailDataRepository = emailDataRepository;
         this.phoneDataRepository = phoneDataRepository;
