@@ -46,6 +46,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new AppUserDetails(user);
     }
 
+    @Transactional
     public UserDetails loadUserByUsernameById(Long id){
         User user = userRepository
                 .findById(id)

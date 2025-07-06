@@ -32,27 +32,17 @@ public class AccountController {
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<?> transfer(@Valid @RequestBody TransferRequestDto transferRequest) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+    public ResponseEntity<?> transfer(@AuthenticationPrincipal AppUserDetails userDetails,
+                                      @Valid @RequestBody TransferRequestDto transferRequest) {
+        Long userIdFrom = userDetails.getUser().getId();
+        try {
+            accountService.transfer(userIdFrom, transferRequest.userIdTo(), transferRequest.amount());
+            return ResponseEntity.ok("Transfer successful");
+        } catch (IllegalArgumentException | IllegalStateException | EntityNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("internal server error");
         }
 
-        Object principal = authentication.getPrincipal();
-        Long userIdFrom = null;
-        if (principal instanceof AppUserDetails appUserDetails) {
-             userIdFrom = appUserDetails.getUser().getId();
-            try {
-                accountService.transfer(userIdFrom, transferRequest.userIdTo(), transferRequest.amount());
-                return ResponseEntity.ok("Transfer successful");
-            } catch (IllegalArgumentException | IllegalStateException | EntityNotFoundException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("internal server error");
-            }
-        }else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        }
     }
 }
