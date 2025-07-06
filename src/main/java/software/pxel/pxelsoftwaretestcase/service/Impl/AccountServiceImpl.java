@@ -20,17 +20,11 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceImpl.class);
-
-    private static final BigDecimal MAX_BALANCE_MULTIPLIER_FACTOR = new BigDecimal("2.07");
-    private static final BigDecimal INCREASE_BALANCE_MULTIPLIER_FACTOR = new BigDecimal("1.10");
-
     private final AccountRepository accountRepository;
-    private final AccountService accountService;
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository, @Lazy AccountService accountService) {
+    public AccountServiceImpl(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
-        this.accountService = accountService;
     }
 
 
@@ -64,43 +58,5 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    @Transactional
-    @Scheduled(fixedRateString = "${balances.increase.fixed-rate}", initialDelayString = "${balances.increase.initial-delay}")
-    @Override
-    public void increaseBalances() {
-        LOGGER.info("start scheduled increase balances");
-        List<Long> accountIds = accountRepository.findAllIds();
-        for (Long id : accountIds) {
-            try {
-                accountService.increaseBalance(id);
-            } catch (Exception e) {
-                LOGGER.error("scheduled increase balances failed " + e.getMessage());
-            }
-        }
-        LOGGER.info("scheduled increase balances successful");
-    }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Override
-    public void increaseBalance(Long accountId) {
-        LOGGER.info("start to increase account balance with id: {}", accountId);
-        try {
-            Account account = accountRepository.findByUserIdForUpdate(accountId)
-                    .orElseThrow(() -> new EntityNotFoundException("account " + accountId + " not found"));
-            BigDecimal maxBalance = account.getInitialBalance().multiply(MAX_BALANCE_MULTIPLIER_FACTOR);
-            BigDecimal newBalance = account.getBalance().multiply(INCREASE_BALANCE_MULTIPLIER_FACTOR);
-            if (newBalance.compareTo(maxBalance) > 0) {
-                newBalance = maxBalance;
-                LOGGER.info("account balance with id: {} is max" , accountId);
-            }
-            if (newBalance.compareTo(account.getBalance()) > 0) {
-                account.setBalance(newBalance);
-                accountRepository.save(account);
-                LOGGER.info("increase account balance with id: {} successful" , accountId);
-            }
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("increase account balance with id: {} failed: " + e.getMessage(), accountId);
-        }
-
-    }
 }

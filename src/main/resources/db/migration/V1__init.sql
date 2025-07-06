@@ -14,13 +14,13 @@ CREATE TABLE account (
 
 CREATE TABLE email_data (
                             id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-                            user_id BIGINT REFERENCES users(id),
+                            user_id BIGINT REFERENCES users(id) NOT NULL ,
                             email VARCHAR(200) UNIQUE
 );
 
 CREATE TABLE phone_data (
                             id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-                            user_id BIGINT REFERENCES users(id),
+                            user_id BIGINT REFERENCES users(id) NOT NULL,
                             phone VARCHAR(13) UNIQUE
 );
 
