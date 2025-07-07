@@ -7,15 +7,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FlywayConfig {
-
-
     private Flyway flyway;
-
     @Autowired
     public FlywayConfig(Flyway flyway) {
         this.flyway = flyway;
     }
-
     @PostConstruct
     public void cleanAndMigrate() {
         flyway.clean();

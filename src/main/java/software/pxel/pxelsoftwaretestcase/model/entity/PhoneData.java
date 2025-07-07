@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Pattern;
 @Entity
 @Table(name = "phone_data")
 public class PhoneData {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

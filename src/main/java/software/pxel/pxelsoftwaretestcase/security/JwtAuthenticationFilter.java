@@ -18,7 +18,6 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-
     public static final String AUTH_HEADER = "Authorization";
     public static final int SUBSTR_JWT_INDEX = 7;
     private final JwtUtil jwtUtil;

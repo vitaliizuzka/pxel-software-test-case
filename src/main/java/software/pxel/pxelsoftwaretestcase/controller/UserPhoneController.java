@@ -24,22 +24,34 @@ public class UserPhoneController {
     @PostMapping
     public ResponseEntity<?> addPhone(@AuthenticationPrincipal AppUserDetails userDetails,
                                       @RequestBody PhoneCreateDeleteDto phoneCreateDeleteDto){
-        userPhoneService.addPhone(userDetails.getUser().getId(), phoneCreateDeleteDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        try {
+            userPhoneService.addPhone(userDetails.getUser().getId(), phoneCreateDeleteDto);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping
     public ResponseEntity<?> updatePhone(@AuthenticationPrincipal AppUserDetails userDetails,
                                          @RequestBody PhoneUpdateDto phoneUpdateDto){
-        userPhoneService.updatePhone(userDetails.getUser().getId(), phoneUpdateDto);
-        return ResponseEntity.ok().build();
+        try {
+            userPhoneService.updatePhone(userDetails.getUser().getId(), phoneUpdateDto);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping
     public ResponseEntity<?> deletePhone(@AuthenticationPrincipal AppUserDetails userDetails,
                                          @RequestBody PhoneCreateDeleteDto phoneCreateDeleteDto){
-        userPhoneService.deletePhone(userDetails.getUser().getId(), phoneCreateDeleteDto);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        try {
+            userPhoneService.deletePhone(userDetails.getUser().getId(), phoneCreateDeleteDto);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
 }

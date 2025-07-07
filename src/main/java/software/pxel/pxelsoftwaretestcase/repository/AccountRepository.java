@@ -15,7 +15,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select a from Account a where a.id = :id")
     Optional<Account> findByUserIdForUpdate(Long id);
-
     Optional<Account> findByUserId(Long userId);
 
     @Query("select a.id from Account a")

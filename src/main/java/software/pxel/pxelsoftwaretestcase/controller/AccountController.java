@@ -1,6 +1,11 @@
 package software.pxel.pxelsoftwaretestcase.controller;
 
 import io.jsonwebtoken.Jwt;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +27,8 @@ import software.pxel.pxelsoftwaretestcase.service.AccountService;
 
 @RestController
 @RequestMapping("/api/accounts")
+@Tag(name = "Account Controller", description = "API for managing account operations including transfers")
 public class AccountController {
-
     private final AccountService accountService;
 
     @Autowired
@@ -31,6 +36,16 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @Operation(summary = "Transfer money between accounts",
+            description = "Transfers a specified amount of money from the authenticated user's account to another user's account.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Transfer successful",
+                    content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "400", description = "Invalid request or business logic error",
+                    content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(mediaType = "text/plain"))
+    })
     @PostMapping("/transfer")
     public ResponseEntity<?> transfer(@AuthenticationPrincipal AppUserDetails userDetails,
                                       @Valid @RequestBody TransferRequestDto transferRequest) {

@@ -4,6 +4,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,14 +24,25 @@ public class AccountServiceImpl implements AccountService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceImpl.class);
     private final AccountRepository accountRepository;
+    private final AccountServiceImpl accountService;
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, @Lazy AccountServiceImpl accountService) {
         this.accountRepository = accountRepository;
+        this.accountService = accountService;
     }
 
+    @Cacheable(cacheNames = "account", key = "#userId")
+    public Account getAccountById(Long userId) {
+        return accountRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("account " + userId + " not found"));
+    }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "account", key = "#userIdFrom"),
+            @CacheEvict(cacheNames = "account", key = "#userIdTo")
+    })
     @Override
     public void transfer(Long userIdFrom, Long userIdTo, BigDecimal amount) {
         LOGGER.info("start transfer balance from id: {} to id: {}", userIdFrom, userIdTo);
@@ -39,10 +53,8 @@ public class AccountServiceImpl implements AccountService {
             if ((amount.compareTo(BigDecimal.ZERO) <= 0)) {
                 throw new IllegalArgumentException("the transfer amount must be positive");
             }
-            Account accountFrom = accountRepository.findByUserIdForUpdate(userIdFrom)
-                    .orElseThrow(() -> new EntityNotFoundException("sender not found"));
-            Account accountTo = accountRepository.findByUserIdForUpdate(userIdTo)
-                    .orElseThrow(() -> new EntityNotFoundException("recipient not found"));
+            Account accountFrom = accountService.getAccountById(userIdFrom);
+            Account accountTo = accountService.getAccountById(userIdTo);
             if (accountFrom.getBalance().compareTo(amount) < 0) {
                 throw new IllegalStateException("Not enough money");
             }
@@ -56,7 +68,4 @@ public class AccountServiceImpl implements AccountService {
         }
         LOGGER.info("transfer balance from id: {} to id: {} successful", userIdFrom, userIdTo);
     }
-
-
-
 }

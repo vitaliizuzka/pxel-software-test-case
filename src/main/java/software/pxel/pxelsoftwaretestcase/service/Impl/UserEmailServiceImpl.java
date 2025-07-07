@@ -67,7 +67,7 @@ public class UserEmailServiceImpl implements UserEmailService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("User with id: " + userId + " don't have email: " + emailDto.email()));
         if (user.getPhones().size() == 1) throw new IllegalArgumentException("It's the last user email");
-        user.getEmails().remove(emailData);
+        user.removeEmail(emailData);
         emailDataRepository.delete(emailData);
     }
 }

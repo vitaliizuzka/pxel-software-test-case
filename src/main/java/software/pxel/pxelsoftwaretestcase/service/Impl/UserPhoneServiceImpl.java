@@ -32,11 +32,9 @@ public class UserPhoneServiceImpl implements UserPhoneService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
         PhoneData phoneData = new PhoneData();
         phoneData.setPhone(phoneDto.phone());
         user.addPhone(phoneData);
-
         userRepository.save(user);
     }
 

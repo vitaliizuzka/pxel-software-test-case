@@ -19,7 +19,6 @@ import software.pxel.pxelsoftwaretestcase.security.JwtUtil;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
