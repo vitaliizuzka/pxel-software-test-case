@@ -39,7 +39,7 @@ public class AccountBalanceAutoIncImpl implements AccountBalanceAutoInc {
     }
 
     @Transactional
-    @Cacheable(cacheNames = "accountIds")
+    //@Cacheable(cacheNames = "accountIds")
     public List<Long> getAllAccountIds() {
         return accountRepository.findAllIds();
     }
@@ -76,7 +76,7 @@ public class AccountBalanceAutoIncImpl implements AccountBalanceAutoInc {
                 account.setBalance(newBalance);
                 accountRepository.save(account);
                 LOGGER.info("increase account balance with id: {} successful" , accountId);
-                evictAccountCache(accountId);
+                //evictAccountCache(accountId);
             }
         } catch (EntityNotFoundException e) {
             LOGGER.error("increase account balance with id: {} failed: " + e.getMessage(), accountId);

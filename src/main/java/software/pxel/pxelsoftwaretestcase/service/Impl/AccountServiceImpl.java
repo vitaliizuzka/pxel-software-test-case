@@ -32,17 +32,17 @@ public class AccountServiceImpl implements AccountService {
         this.accountService = accountService;
     }
 
-    @Cacheable(cacheNames = "account", key = "#userId")
+    //@Cacheable(cacheNames = "account", key = "#userId")
     public Account getAccountById(Long userId) {
-        return accountRepository.findByUserId(userId)
+        return accountRepository.findByUserIdForUpdate(userId)
                 .orElseThrow(() -> new EntityNotFoundException("account " + userId + " not found"));
     }
 
     @Transactional
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "account", key = "#userIdFrom"),
-            @CacheEvict(cacheNames = "account", key = "#userIdTo")
-    })
+//    @Caching(evict = {
+//            @CacheEvict(cacheNames = "account", key = "#userIdFrom"),
+//            @CacheEvict(cacheNames = "account", key = "#userIdTo")
+//    })
     @Override
     public void transfer(Long userIdFrom, Long userIdTo, BigDecimal amount) {
         LOGGER.info("start transfer balance from id: {} to id: {}", userIdFrom, userIdTo);
