@@ -27,11 +27,11 @@ public class AccountBalanceAutoIncImpl implements AccountBalanceAutoInc {
     private static final BigDecimal INCREASE_BALANCE_MULTIPLIER_FACTOR = new BigDecimal("1.10");
 
     private final AccountRepository accountRepository;
-    private final AccountBalanceAutoIncImpl accountBalanceAutoInc;
+    private final AccountBalanceAutoInc accountBalanceAutoInc;
    private final AccountServiceImpl accountService;
    private final CacheManager cacheManager;
 
-    public AccountBalanceAutoIncImpl(AccountRepository accountRepository, @Lazy AccountBalanceAutoIncImpl accountBalanceAutoInc, AccountServiceImpl accountService, CacheManager cacheManager) {
+    public AccountBalanceAutoIncImpl(AccountRepository accountRepository, @Lazy AccountBalanceAutoInc accountBalanceAutoInc, AccountServiceImpl accountService, CacheManager cacheManager) {
         this.accountRepository = accountRepository;
         this.accountBalanceAutoInc = accountBalanceAutoInc;
         this.accountService = accountService;
@@ -39,7 +39,7 @@ public class AccountBalanceAutoIncImpl implements AccountBalanceAutoInc {
     }
 
     @Transactional
-    //@Cacheable(cacheNames = "accountIds")
+    @Cacheable(cacheNames = "accountIds")
     public List<Long> getAllAccountIds() {
         return accountRepository.findAllIds();
     }
@@ -76,7 +76,7 @@ public class AccountBalanceAutoIncImpl implements AccountBalanceAutoInc {
                 account.setBalance(newBalance);
                 accountRepository.save(account);
                 LOGGER.info("increase account balance with id: {} successful" , accountId);
-                //evictAccountCache(accountId);
+                evictAccountCache(accountId);
             }
         } catch (EntityNotFoundException e) {
             LOGGER.error("increase account balance with id: {} failed: " + e.getMessage(), accountId);

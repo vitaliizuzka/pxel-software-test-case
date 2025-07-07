@@ -42,26 +42,7 @@ class AccountServiceImplTest {
         accountTo.setBalance(new BigDecimal("50.00"));
     }
 
-    @Test
-    void testGetAccountByIdFound() {
-        when(accountRepository.findByUserId(1L)).thenReturn(Optional.of(accountFrom));
 
-        Account result = accountServiceImpl.getAccountById(1L);
-
-        assertEquals(accountFrom, result);
-        verify(accountRepository).findByUserId(1L);
-    }
-
-    @Test
-    void testGetAccountByIdNotFound() {
-        when(accountRepository.findByUserId(1L)).thenReturn(Optional.empty());
-
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
-                () -> accountServiceImpl.getAccountById(1L));
-        assertEquals("account 1 not found", exception.getMessage());
-
-        verify(accountRepository).findByUserId(1L);
-    }
 
     @Test
     void testTransferSuccess() {

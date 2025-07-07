@@ -15,13 +15,13 @@ CREATE TABLE account (
 CREATE TABLE email_data (
                             id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
                             user_id BIGINT REFERENCES users(id) NOT NULL ,
-                            email VARCHAR(200) UNIQUE
+                            email VARCHAR(200) UNIQUE NOT NULL
 );
 
 CREATE TABLE phone_data (
                             id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
                             user_id BIGINT REFERENCES users(id) NOT NULL,
-                            phone VARCHAR(13) UNIQUE
+                            phone VARCHAR(13) UNIQUE NOT NULL
 );
 
 CREATE INDEX idx_email_data_email ON email_data(email);

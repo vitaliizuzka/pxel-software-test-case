@@ -37,7 +37,7 @@ public class Account {
         this.balance = balance;
     }
 
-    public User getUser() {
-        return user;
-    }
+//     public User getUser() {
+//        return user;
+//    }
 }

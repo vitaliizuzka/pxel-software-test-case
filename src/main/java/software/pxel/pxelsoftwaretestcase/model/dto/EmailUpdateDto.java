@@ -1,5 +1,7 @@
 package software.pxel.pxelsoftwaretestcase.model.dto;
 
-public record EmailUpdateDto(String oldEmail,
-                             String newEmail) {
+import jakarta.validation.constraints.Email;
+
+public record EmailUpdateDto(@Email String oldEmail,
+                             @Email String newEmail) {
 }

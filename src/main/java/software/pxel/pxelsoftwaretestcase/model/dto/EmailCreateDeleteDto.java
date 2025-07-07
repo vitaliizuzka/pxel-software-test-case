@@ -1,4 +1,6 @@
 package software.pxel.pxelsoftwaretestcase.model.dto;
 
-public record EmailCreateDeleteDto (String email){
+import jakarta.validation.constraints.Email;
+
+public record EmailCreateDeleteDto (@Email String email){
 }

@@ -1,4 +1,9 @@
 package software.pxel.pxelsoftwaretestcase.model.dto;
 
-public record PhoneCreateDeleteDto(String phone){
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
+public record PhoneCreateDeleteDto(@Pattern(regexp = "\\d{11,13}")
+                                   @NotNull
+                                   String phone){
 }
