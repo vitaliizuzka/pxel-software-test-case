@@ -48,8 +48,8 @@ class AccountServiceImplTest {
     void testTransferSuccess() {
         BigDecimal transferAmount = new BigDecimal("30.00");
 
-        when(accountService.getAccountById(1L)).thenReturn(accountFrom);
-        when(accountService.getAccountById(2L)).thenReturn(accountTo);
+        when(accountRepository.findByUserIdForUpdate(1L)).thenReturn(Optional.of(accountFrom));
+        when(accountRepository.findByUserIdForUpdate(2L)).thenReturn(Optional.of(accountTo));
 
         accountServiceImpl.transfer(1L, 2L, transferAmount);
 
@@ -89,7 +89,7 @@ class AccountServiceImplTest {
 
     @Test
     void testTransferAccountFromNotFoundThrows() {
-        when(accountService.getAccountById(1L)).thenThrow(new EntityNotFoundException("account 1 not found"));
+        when(accountRepository.findByUserIdForUpdate(1L)).thenThrow(new EntityNotFoundException("account 1 not found"));
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> accountServiceImpl.transfer(1L, 2L, new BigDecimal("10")));
@@ -100,8 +100,8 @@ class AccountServiceImplTest {
 
     @Test
     void testTransferAccountToNotFoundThrows() {
-        when(accountService.getAccountById(1L)).thenReturn(accountFrom);
-        when(accountService.getAccountById(2L)).thenThrow(new EntityNotFoundException("account 2 not found"));
+        when(accountRepository.findByUserIdForUpdate(1L)).thenReturn(Optional.of(accountFrom));
+        when(accountRepository.findByUserIdForUpdate(2L)).thenThrow(new EntityNotFoundException("account 2 not found"));
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> accountServiceImpl.transfer(1L, 2L, new BigDecimal("10")));
@@ -112,8 +112,8 @@ class AccountServiceImplTest {
 
     @Test
     void testTransferNotEnoughMoneyThrows() {
-        when(accountService.getAccountById(1L)).thenReturn(accountFrom);
-        when(accountService.getAccountById(2L)).thenReturn(accountTo);
+        when(accountRepository.findByUserIdForUpdate(1L)).thenReturn(Optional.of(accountFrom));
+        when(accountRepository.findByUserIdForUpdate(2L)).thenReturn(Optional.of(accountTo));
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
                 () -> accountServiceImpl.transfer(1L, 2L, new BigDecimal("200")));
