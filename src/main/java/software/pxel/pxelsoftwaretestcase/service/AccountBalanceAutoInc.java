@@ -9,4 +9,5 @@ public interface AccountBalanceAutoInc {
     void increaseBalance(Long id);
     List<Long> getAllAccountIds();
     Account getAccountById(Long userId);
+    void evictCache(Long userId);
 }

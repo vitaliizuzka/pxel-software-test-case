@@ -14,6 +14,7 @@ public class UserMapper {
                 user.getName(),
                 user.getDateOfBirth(),
                 user.getEmails().stream().map(EmailData::getEmail).toList(),
-                user.getPhones().stream().map(PhoneData::getPhone).toList());
+                user.getPhones().stream().map(PhoneData::getPhone).toList(),
+                user.getAccount());
     }
 }

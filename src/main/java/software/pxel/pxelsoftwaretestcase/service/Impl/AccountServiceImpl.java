@@ -69,18 +69,24 @@ public class AccountServiceImpl implements AccountService {
                 throw new IllegalStateException("Not enough money");
             }
 
-            secondAccount.setBalance(firstAccount.getBalance().subtract(amount));
-            receiverAccount.setBalance(secondAccount.getBalance().add(amount));
+            senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
+            receiverAccount.setBalance(receiverAccount.getBalance().add(amount));
+
             accountRepository.save(senderAccount);
             accountRepository.save(receiverAccount);
 
-            accountCacheService.evictAccountCache(senderAccount.getId());
-            accountCacheService.evictAccountCache(receiverAccount.getId());
+            accountService.evictCache(senderAccount.getId());
+            accountService.evictCache(receiverAccount.getId());
 
         } catch (IllegalArgumentException | EntityNotFoundException | IllegalStateException e) {
             LOGGER.info("transfer balance from id: {} to id: {} failed: {}", userIdFrom, userIdTo, e.getMessage());
             throw e;
         }
         LOGGER.info("transfer balance from id: {} to id: {} successful", userIdFrom, userIdTo);
+    }
+
+    @CacheEvict(cacheNames = "account", key = "#userId")
+    public void evictCache(Long userId) {
+        LOGGER.info("evict {}", userId);
     }
 }

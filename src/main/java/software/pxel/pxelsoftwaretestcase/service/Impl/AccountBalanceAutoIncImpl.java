@@ -3,6 +3,7 @@ package software.pxel.pxelsoftwaretestcase.service.Impl;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,7 +22,7 @@ import java.util.List;
 @Service
 public class AccountBalanceAutoIncImpl implements AccountBalanceAutoInc {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountBalanceAutoIncImpl.class);
 
     private static final BigDecimal MAX_BALANCE_MULTIPLIER_FACTOR = new BigDecimal("2.07");
     private static final BigDecimal INCREASE_BALANCE_MULTIPLIER_FACTOR = new BigDecimal("1.10");
@@ -37,6 +38,7 @@ public class AccountBalanceAutoIncImpl implements AccountBalanceAutoInc {
         this.accountBalanceAutoInc = accountBalanceAutoInc;
         this.accountCacheService = accountCacheService;
     }
+
 
     @Transactional
     @Cacheable(cacheNames = "account", key = "#userId")
@@ -58,7 +60,7 @@ public class AccountBalanceAutoIncImpl implements AccountBalanceAutoInc {
         LOGGER.info("start scheduled increase balances");
         List<Long> accountIds = accountBalanceAutoInc.getAllAccountIds();
 
-        accountIds.parallelStream().forEach(id -> {
+        accountIds.forEach(id -> {
             try {
                 accountBalanceAutoInc.increaseBalance(id);
             } catch (Exception e) {
@@ -84,10 +86,15 @@ public class AccountBalanceAutoIncImpl implements AccountBalanceAutoInc {
                 account.setBalance(newBalance);
                 accountRepository.save(account);
                 LOGGER.info("increase account balance with id: {} successful", accountId);
-                accountCacheService.evictAccountCache(accountId);
+                accountBalanceAutoInc.evictCache(accountId);
             }
         } catch (EntityNotFoundException e) {
             LOGGER.error("increase account balance with id: {} failed: " + e.getMessage(), accountId);
         }
+    }
+
+    @CacheEvict(cacheNames = "account", key = "#userId")
+    public void evictCache(Long userId) {
+        LOGGER.info("evict {}", userId);
     }
 }
