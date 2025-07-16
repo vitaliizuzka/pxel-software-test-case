@@ -16,6 +16,7 @@ public class UserEmailController {
 
     private final UserEmailService userEmailService;
 
+
     @Autowired
     public UserEmailController(UserEmailService userEmailService) {
         this.userEmailService = userEmailService;

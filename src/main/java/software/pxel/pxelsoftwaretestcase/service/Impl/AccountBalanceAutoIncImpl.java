@@ -60,7 +60,7 @@ public class AccountBalanceAutoIncImpl implements AccountBalanceAutoInc {
         LOGGER.info("start scheduled increase balances");
         List<Long> accountIds = accountBalanceAutoInc.getAllAccountIds();
 
-        accountIds.forEach(id -> {
+        accountIds.parallelStream().forEach(id -> {
             try {
                 accountBalanceAutoInc.increaseBalance(id);
             } catch (Exception e) {

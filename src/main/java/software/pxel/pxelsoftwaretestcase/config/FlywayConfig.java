@@ -14,6 +14,7 @@ public class FlywayConfig {
     }
     @PostConstruct
     public void cleanAndMigrate() {
+
         flyway.clean();
         flyway.migrate();
     }
